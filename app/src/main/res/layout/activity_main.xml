@@ -18,11 +18,11 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/navigation_graph" />
 
-<!--        <fragment-->
-<!--            android:id="@+id/bottom_nav_drawer"-->
-<!--            android:name="com.vane.android.replycl.ui.nav.BottomNavDrawerFragment"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent" />-->
+        <fragment
+            android:id="@+id/bottom_nav_drawer"
+            android:name="com.vane.android.replycl.ui.nav.BottomNavDrawerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
@@ -54,6 +54,7 @@
                     app:tint="?attr/colorOnPrimarySurface" />
 
                 <ImageView
+                    android:id="@+id/bottom_app_logo"
                     android:layout_width="@dimen/bottom_app_bar_logo_size"
                     android:layout_height="@dimen/bottom_app_bar_logo_size"
                     android:layout_gravity="center_vertical"

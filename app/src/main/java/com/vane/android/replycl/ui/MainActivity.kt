@@ -20,14 +20,19 @@ import com.vane.android.replycl.databinding.ActivityMainBinding
 import com.vane.android.replycl.ui.compose.ComposeFragmentDirections
 import com.vane.android.replycl.ui.home.HomeFragmentDirections
 import com.vane.android.replycl.ui.home.Mailbox
+import com.vane.android.replycl.ui.nav.*
 import com.vane.android.replycl.ui.search.SearchFragmentDirections
 import com.vane.android.replycl.util.contentView
+import kotlin.LazyThreadSafetyMode.*
 
 class MainActivity : AppCompatActivity(),
     Toolbar.OnMenuItemClickListener,
     NavController.OnDestinationChangedListener {
 
     private val binding: ActivityMainBinding by contentView(R.layout.activity_main)
+    private val bottomNavDrawer: BottomNavDrawerFragment by lazy(NONE) {
+        supportFragmentManager.findFragmentById(R.id.bottom_nav_drawer) as BottomNavDrawerFragment
+    }
 
     val currentNavigationFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
@@ -59,24 +64,38 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-        // TODO: Later to config bottomNavDrawer here
+        // Set up some State and Slide Actions for the bottomNavDrawer
+        bottomNavDrawer.apply {
+            addOnSlideAction(HalfClockwiseRotateSlideAction(binding.bottomAppBarChevron))
+            addOnSlideAction(AlphaSlideAction(binding.bottomAppBarTitle, true))
+            addOnStateChangedAction(ShowHideFabStateAction(binding.fab))
+            addOnStateChangedAction(ChangeSettingsMenuStateAction { showSettings ->
+                // Toggle between the current destination's BAB menu and the menu which should
+                // be displayed when the BottomNavigationDrawer is open.
+                binding.bottomAppBar.replaceMenu(
+                    if (showSettings) {
+                        R.menu.bottom_app_bar_settings_menu
+                    } else {
+                        getBottomAppBarMenuForDestination()
+                    }
+                )
+            })
+            addOnSandwichSlideAction(HalfCounterClockwiseRotateSlideAction(binding.bottomAppBarChevron))
+        }
 
         // Set up the BottomAppBar menu
         binding.bottomAppBar.apply {
             setNavigationOnClickListener {
-                // bottomNavDrawer.toggle()
+                bottomNavDrawer.toggle()
             }
-            setOnClickListener {
-
-            }
-            //inflateMenu(R.menu.bottom_app_bar_home_menu)
             setOnMenuItemClickListener(this@MainActivity)
         }
 
         // Set up the BottomNavigationDrawer's open/close affordance
         binding.bottomAppBarContentContainer.setOnClickListener {
             //TODO: Set up the BottomNavigationDrawer's open/close affordance
-            Toast.makeText(applicationContext, "AppBar clicked", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(applicationContext, "AppBar clicked", Toast.LENGTH_SHORT).show()
+            bottomNavDrawer.toggle()
         }
     }
 
@@ -127,8 +146,13 @@ class MainActivity : AppCompatActivity(),
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
+            R.id.menu_settings -> {
+                bottomNavDrawer.close()
+                showDarkThemeMenu()
+            }
             R.id.menu_search -> navigateToSearch()
 
+            // TODO: Add update and delete optioons for the menu_email_star/delete
         }
         return true
     }
@@ -189,6 +213,10 @@ class MainActivity : AppCompatActivity(),
                 }
             })
         }
+    }
+
+    private fun showDarkThemeMenu() {
+        // TODO:
     }
 
     fun navigateToHome(@StringRes titleRes: Int, mailbox: Mailbox) {

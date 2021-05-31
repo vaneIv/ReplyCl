@@ -30,7 +30,7 @@ fun lerp(
 /**
  * Linearly interpolate between two values when the fraction is in a given range.
  */
-fun larp(
+fun lerp(
     startValue: Float,
     endValue: Float,
     @FloatRange(
