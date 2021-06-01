@@ -6,6 +6,9 @@ import com.vane.android.replycl.R
 import com.vane.android.replycl.data.EmailStore
 import com.vane.android.replycl.ui.home.Mailbox
 
+/**
+ * A class which maintains and generates a navigation list to be displayed by [NavigationAdapter].
+ */
 object NavigationModel {
 
     const val INBOX_ID = 0
