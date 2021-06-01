@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="currentUserAccount"
+            type="com.vane.android.replycl.data.Account" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -38,7 +41,8 @@
                 android:orientation="vertical"
                 android:paddingTop="@dimen/grid_3"
                 android:paddingBottom="@dimen/grid_3"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:paddingBottomSystemWindowInsets="@{true}" />
 
             <!--            app:glideCenterCrop="@{true}"-->
             <!--            app:glideCircularCrop="@{true}"-->
@@ -49,7 +53,10 @@
                 android:layout_gravity="center|top"
                 android:contentDescription="@string/bottom_nav_drawer_profile_image_content_desc"
                 android:foreground="?attr/actionBarItemBackground"
-                android:padding="@dimen/grid_1" />
+                android:padding="@dimen/grid_1"
+                app:glideCenterCrop="@{true}"
+                app:glideCircularCrop="@{true}"
+                app:glideSrc="@{currentUserAccount.avatar}" />
 
             <!--Container to act as the drawer's foreground container and hold all navigation-->
             <LinearLayout

@@ -13,6 +13,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.vane.android.replycl.R
+import com.vane.android.replycl.data.Account
+import com.vane.android.replycl.data.AccountStore
 import com.vane.android.replycl.databinding.FragmentBottomNavDrawerBinding
 import com.vane.android.replycl.util.lerp
 import com.vane.android.replycl.util.themeColor
@@ -20,7 +22,10 @@ import com.vane.android.replycl.util.themeInterpolator
 import kotlin.LazyThreadSafetyMode.*
 import kotlin.math.abs
 
-class BottomNavDrawerFragment : Fragment() {
+class BottomNavDrawerFragment :
+    Fragment(),
+    NavigationAdapter.NavigationAdapterListener,
+    AccountAdapter.AccountAdapterListener {
 
     /**
      * Enumeration of states in which the account picker can be in.
@@ -53,6 +58,10 @@ class BottomNavDrawerFragment : Fragment() {
     private val bottomSheetCallback = BottomNavigationDrawerCallback()
 
     private val sandwichSlideAction = mutableListOf<OnSandwichSlideAction>()
+
+    private val navigationListeners: MutableList<NavigationAdapter.NavigationAdapterListener> =
+        mutableListOf()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,14 +105,16 @@ class BottomNavDrawerFragment : Fragment() {
                 addOnStateChangedAction(VisibilityStateAction(scrimView))
 
                 // Foreground transforms
-                addOnSlideAction(ForegroundSheetTransformSlideAction(
-                    binding.foregroundContainer,
-                    foregroundShapeDrawable,
-                    binding.profileImageView
-                ))
+                addOnSlideAction(
+                    ForegroundSheetTransformSlideAction(
+                        binding.foregroundContainer,
+                        foregroundShapeDrawable,
+                        binding.profileImageView
+                    )
+                )
 
                 // Recycler transforms
-                // TODO:
+                addOnStateChangedAction(ScrollToTopStateAction(navRecyclerView))
 
                 //Close the sandwiching account picker if open
                 addOnStateChangedAction(object : OnStateChangedAction {
@@ -112,12 +123,33 @@ class BottomNavDrawerFragment : Fragment() {
                         sandwichProgress = 0F
                     }
                 })
+                // If the drawer is open, pressing the system back button should close the drawer.
+                addOnStateChangedAction(object : OnStateChangedAction {
+                    override fun onStateChanged(sheet: View, newState: Int) {
+                        closeDrawerOnBackPressed.isEnabled = newState != STATE_HIDDEN
+                    }
+                })
             }
 
             profileImageView.setOnClickListener { toggleSandwich() }
 
             behavior.addBottomSheetCallback(bottomSheetCallback)
             behavior.state = STATE_HIDDEN
+
+            val adapter = NavigationAdapter(this@BottomNavDrawerFragment)
+
+            navRecyclerView.adapter = adapter
+            NavigationModel.navigationList.observe(viewLifecycleOwner) {
+                adapter.submitList(it)
+            }
+            NavigationModel.setNavigationMenuItemChecked(0)
+
+            val accountAdapter = AccountAdapter(this@BottomNavDrawerFragment)
+            accountRecyclerView.adapter = accountAdapter
+            AccountStore.userAccounts.observe(viewLifecycleOwner) {
+                accountAdapter.submitList(it)
+                currentUserAccount = it.first { acc -> acc.isCurrentAccount }
+            }
         }
     }
 
@@ -170,10 +202,8 @@ class BottomNavDrawerFragment : Fragment() {
         requireContext().themeInterpolator(R.attr.motionInterpolatorPersistent)
     }
 
-    /**
-     * Progress value which drives the animation of the sandwiching account picker. Responsible
-     * for both calling progress updates and state updates.
-     */
+    // Progress value which drives the animation of the sandwiching account picker. Responsible
+    // for both calling progress updates and state updates.
     private var sandwichProgress: Float = 0F
         set(value) {
             if (field != value) {
@@ -217,10 +247,31 @@ class BottomNavDrawerFragment : Fragment() {
         bottomSheetCallback.addOnStateChangedAction(action)
     }
 
-    // TODO: Create fun addNavigationListener
+    fun addNavigationListener(listener: NavigationAdapter.NavigationAdapterListener) {
+        navigationListeners.add(listener)
+    }
 
+    /**
+     * Add actions to be run when the slide offset (animation progress) or the sandwiching account
+     * picker has changed.
+     */
     fun addOnSandwichSlideAction(action: OnSandwichSlideAction) {
         sandwichSlideAction.add(action)
+    }
+
+    override fun onNavMenuItemClicked(item: NavigationModelItem.NavMenuItem) {
+        NavigationModel.setNavigationMenuItemChecked(item.id)
+        close()
+        navigationListeners.forEach { it.onNavMenuItemClicked(item) }
+    }
+
+    override fun onNavEmailFolderClicked(folder: NavigationModelItem.NavEmailFolder) {
+        navigationListeners.forEach { it.onNavEmailFolderClicked(folder) }
+    }
+
+    override fun onAccountClicked(account: Account) {
+        AccountStore.setCurrentUserAccount(account.id)
+        toggleSandwich()
     }
 
     /**
@@ -267,6 +318,7 @@ class BottomNavDrawerFragment : Fragment() {
             profileImageView.scaleX = 1F - navProgress
             profileImageView.scaleY = 1F - navProgress
             profileImageView.alpha = 1F - navProgress
+            foregroundContainer.alpha = 1F - navProgress
             accountRecyclerView.alpha = accProgress
 
             foregroundShapeDrawable.interpolation = 1F - navProgress

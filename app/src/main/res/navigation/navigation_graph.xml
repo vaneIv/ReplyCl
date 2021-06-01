@@ -11,15 +11,28 @@
         <action
             android:id="@+id/action_homeFragment_to_emailFragment"
             app:destination="@id/emailFragment" />
+        <argument
+            android:name="mailbox"
+            app:argType="com.vane.android.replycl.ui.home.Mailbox"
+            android:defaultValue="INBOX" />
     </fragment>
     <fragment
         android:id="@+id/composeFragment"
         android:name="com.vane.android.replycl.ui.compose.ComposeFragment"
-        android:label="ComposeFragment" />
+        android:label="ComposeFragment" >
+        <argument
+            android:name="replyToEmailId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
     <fragment
         android:id="@+id/emailFragment"
         android:name="com.vane.android.replycl.ui.email.EmailFragment"
-        android:label="EmailFragment" />
+        android:label="EmailFragment" >
+        <argument
+            android:name="emailId"
+            app:argType="long" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.vane.android.replycl.ui.search.SearchFragment"

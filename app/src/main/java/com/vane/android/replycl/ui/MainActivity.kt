@@ -16,8 +16,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import com.vane.android.replycl.R
+import com.vane.android.replycl.data.EmailStore
 import com.vane.android.replycl.databinding.ActivityMainBinding
 import com.vane.android.replycl.ui.compose.ComposeFragmentDirections
+import com.vane.android.replycl.ui.email.EmailFragmentArgs
 import com.vane.android.replycl.ui.home.HomeFragmentDirections
 import com.vane.android.replycl.ui.home.Mailbox
 import com.vane.android.replycl.ui.nav.*
@@ -27,12 +29,17 @@ import kotlin.LazyThreadSafetyMode.*
 
 class MainActivity : AppCompatActivity(),
     Toolbar.OnMenuItemClickListener,
-    NavController.OnDestinationChangedListener {
+    NavController.OnDestinationChangedListener,
+    NavigationAdapter.NavigationAdapterListener {
 
     private val binding: ActivityMainBinding by contentView(R.layout.activity_main)
     private val bottomNavDrawer: BottomNavDrawerFragment by lazy(NONE) {
         supportFragmentManager.findFragmentById(R.id.bottom_nav_drawer) as BottomNavDrawerFragment
     }
+
+    // Keep track of the current Email being viewed, if any, in order to pass the correct email id
+    // to ComposeFragment when this Activity's FAB is clicked.
+    private var currentEmailId = -1L
 
     val currentNavigationFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
@@ -81,6 +88,7 @@ class MainActivity : AppCompatActivity(),
                 )
             })
             addOnSandwichSlideAction(HalfCounterClockwiseRotateSlideAction(binding.bottomAppBarChevron))
+            addNavigationListener(this@MainActivity)
         }
 
         // Set up the BottomAppBar menu
@@ -93,8 +101,6 @@ class MainActivity : AppCompatActivity(),
 
         // Set up the BottomNavigationDrawer's open/close affordance
         binding.bottomAppBarContentContainer.setOnClickListener {
-            //TODO: Set up the BottomNavigationDrawer's open/close affordance
-//            Toast.makeText(applicationContext, "AppBar clicked", Toast.LENGTH_SHORT).show()
             bottomNavDrawer.toggle()
         }
     }
@@ -111,15 +117,20 @@ class MainActivity : AppCompatActivity(),
         // BottomAppBar and FAB based on the current destination.
         when (destination.id) {
             R.id.homeFragment -> {
+                currentEmailId = -1
                 setBottomAppBarForHome(getBottomAppBarMenuForDestination(destination))
             }
             R.id.emailFragment -> {
+                currentEmailId =
+                    if (arguments == null) -1 else EmailFragmentArgs.fromBundle(arguments).emailId
                 setBottomAppBarForEmail(getBottomAppBarMenuForDestination(destination))
             }
             R.id.composeFragment -> {
+                currentEmailId = -1
                 setBottomAppBarForCompose()
             }
             R.id.searchFragment -> {
+                currentEmailId = -1
                 setBottomAppBarForSearch()
             }
         }
@@ -151,8 +162,13 @@ class MainActivity : AppCompatActivity(),
                 showDarkThemeMenu()
             }
             R.id.menu_search -> navigateToSearch()
-
-            // TODO: Add update and delete optioons for the menu_email_star/delete
+            R.id.menu_email_star -> {
+                EmailStore.update(currentEmailId) { isStarred = !isStarred }
+            }
+            R.id.menu_email_delete -> {
+                EmailStore.delete(currentEmailId)
+                findNavController(R.id.nav_host_fragment).popBackStack()
+            }
         }
         return true
     }
@@ -252,5 +268,14 @@ class MainActivity : AppCompatActivity(),
 
         delegate.localNightMode = nightMode
         return true
+    }
+
+    override fun onNavMenuItemClicked(item: NavigationModelItem.NavMenuItem) {
+        // Swap the list of emails for the given mailbox
+        navigateToHome(item.titleRes, item.mailbox)
+    }
+
+    override fun onNavEmailFolderClicked(folder: NavigationModelItem.NavEmailFolder) {
+        // Do nothing
     }
 }
