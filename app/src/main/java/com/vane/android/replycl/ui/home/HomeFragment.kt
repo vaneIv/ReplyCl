@@ -14,6 +14,7 @@ import com.vane.android.replycl.data.Email
 import com.vane.android.replycl.data.EmailStore
 import com.vane.android.replycl.databinding.FragmentHomeBinding
 import com.vane.android.replycl.ui.MainActivity
+import com.vane.android.replycl.ui.MenuBottomSheetDialogFragment
 import com.vane.android.replycl.ui.nav.NavigationModel
 
 /**
@@ -83,7 +84,11 @@ class HomeFragment : Fragment(), EmailAdapter.EmailAdapterListener {
     }
 
     override fun onEmailLongPressed(email: Email): Boolean {
-        TODO("Configure MenuBottomSheetDialogFragment")
+        MenuBottomSheetDialogFragment
+            .newInstance(R.menu.email_bottom_sheet_menu)
+            .show(parentFragmentManager, null)
+
+        return true
     }
 
     override fun onEmailStarChanged(email: Email, newValue: Boolean) {
