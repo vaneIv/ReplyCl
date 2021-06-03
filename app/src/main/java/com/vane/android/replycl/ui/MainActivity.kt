@@ -232,7 +232,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun showDarkThemeMenu() {
-        // TODO:
+        MenuBottomSheetDialogFragment
+            .newInstance(R.menu.dark_theme_bottom_sheet_menu)
+            .show(supportFragmentManager, null)
     }
 
     fun navigateToHome(@StringRes titleRes: Int, mailbox: Mailbox) {
