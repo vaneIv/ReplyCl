@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="navEmailFolder"
+            type="com.vane.android.replycl.ui.nav.NavigationModelItem.NavEmailFolder" />
+
+        <variable
+            name="navListener"
+            type="com.vane.android.replycl.ui.nav.NavigationAdapter.NavigationAdapterListener" />
+    </data>
+
+    <TextView
+        android:id="@+id/nav_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_drawer_menu_item_height"
+        android:background="?attr/selectableItemBackground"
+        android:drawablePadding="@dimen/grid_4"
+        android:ellipsize="end"
+        android:gravity="center_vertical|start"
+        android:lines="1"
+        android:onClick="@{() -> navListener.onNavEmailFolderClicked(navEmailFolder)}"
+        android:paddingLeft="@dimen/grid_4"
+        android:paddingRight="@dimen/grid_4"
+        android:text="@{navEmailFolder.emailFolder}"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+        android:textColor="@color/color_on_primary_surface_emphasis_medium"
+        app:drawableStartCompat="@drawable/ic_twotone_folder"
+        app:drawableTint="@color/color_on_primary_surface_emphasis_medium"
+        tools:text="Pine Elementary" />
+
+</layout>
