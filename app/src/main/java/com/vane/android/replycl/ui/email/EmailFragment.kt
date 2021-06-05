@@ -34,6 +34,8 @@ class EmailFragment : Fragment() {
 
         // TODO: Set up MaterialContainerTransform transition as sharedElementEnterTransition.
         sharedElementEnterTransition = MaterialContainerTransform().apply {
+            // Scope the transition to a view in the hierarchy so we know it will be added under
+            // the bottom app bar but over the elevation scale of the exiting HomeFragment.
             drawingViewId = R.id.nav_host_fragment
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
             scrimColor = Color.TRANSPARENT
