@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import com.google.android.material.transition.MaterialElevationScale
 import com.vane.android.replycl.R
 import com.vane.android.replycl.data.EmailStore
 import com.vane.android.replycl.databinding.ActivityMainBinding
@@ -246,6 +247,15 @@ class MainActivity : AppCompatActivity(),
 
     private fun navigateToCompose() {
         // TODO: Set up MaterialElevationScale transition as exit and reenter transitions.
+        currentNavigationFragment?.apply {
+            exitTransition = MaterialElevationScale(false).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            reenterTransition = MaterialElevationScale(true).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+        }
+
         val directions = ComposeFragmentDirections.actionGlobalComposeFragment(currentEmailId)
         findNavController(R.id.nav_host_fragment).navigate(directions)
     }
