@@ -1,5 +1,6 @@
 package com.vane.android.replycl.ui.email
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import com.vane.android.replycl.R
 import com.vane.android.replycl.data.EmailStore
 import com.vane.android.replycl.databinding.FragmentEmailBinding
+import com.vane.android.replycl.util.themeColor
 import kotlin.LazyThreadSafetyMode.*
 
 private const val MAX_GRID_SPANS = 3
@@ -30,6 +33,12 @@ class EmailFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // TODO: Set up MaterialContainerTransform transition as sharedElementEnterTransition.
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host_fragment
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
+        }
     }
 
     override fun onCreateView(

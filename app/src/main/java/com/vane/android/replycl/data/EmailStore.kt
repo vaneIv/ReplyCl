@@ -241,7 +241,7 @@ object EmailStore {
      * Delete the [Email] with the given [id]
      */
     fun delete(id: Long) {
-        update(id) { mailbox == Mailbox.TRASH }
+        update(id) { mailbox = Mailbox.TRASH }
     }
 
     /**

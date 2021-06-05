@@ -10,6 +10,7 @@
             type="com.vane.android.replycl.data.Email" />
     </data>
 
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
@@ -23,8 +24,10 @@
 
         <!-- TODO: Set MaterialCardView transition name. -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/email_card_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:transitionName="@string/email_card_detail_transition_name">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/menu_item_constraint_layout"
@@ -52,13 +55,13 @@
                     android:id="@+id/navigation_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:alpha="?attr/emphasisMediumAlpha"
+                    android:background="?attr/actionBarItemBackground"
+                    android:contentDescription="@string/navigate_back_icon_content_desc"
                     android:padding="@dimen/grid_2"
                     app:layout_constraintEnd_toEndOf="@+id/sender_profile_image_view"
                     app:layout_constraintStart_toStartOf="@+id/sender_profile_image_view"
                     app:layout_constraintTop_toTopOf="@+id/subject_text_view"
-                    android:alpha="?attr/emphasisMediumAlpha"
-                    android:background="?attr/actionBarItemBackground"
-                    android:contentDescription="@string/navigate_back_icon_content_desc"
                     app:srcCompat="@drawable/ic_arrow_down" />
 
                 <TextView
@@ -67,11 +70,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/grid_1"
                     android:layout_marginEnd="@dimen/grid_1"
+                    android:text="@{email.senderPreview}"
+                    android:textAppearance="?attr/textAppearanceBody2"
                     app:layout_constraintEnd_toStartOf="@+id/sender_profile_image_view"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/subject_text_view"
-                    android:text="@{email.senderPreview}"
-                    android:textAppearance="?attr/textAppearanceBody2"
                     tools:text="Ali Connors -- 12m" />
 
                 <TextView
@@ -80,12 +83,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/grid_0_25"
                     android:layout_marginEnd="@dimen/grid_1"
-                    app:layout_constraintEnd_toStartOf="@+id/sender_profile_image_view"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sender_text_view"
                     android:text="@{@string/email_recipient_to(email.recipientsPreview)}"
                     android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/color_on_surface_emphasis_medium" />
+                    android:textColor="@color/color_on_surface_emphasis_medium"
+                    app:layout_constraintEnd_toStartOf="@+id/sender_profile_image_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sender_text_view" />
 
                 <ImageView
                     android:id="@+id/sender_profile_image_view"
@@ -95,9 +98,9 @@
                     android:scaleType="centerCrop"
                     app:glideCircularCrop="@{true}"
                     app:glideSrc="@{email.sender.avatar}"
-                    app:layout_constraintTop_toTopOf="@id/sender_text_view"
                     app:layout_constraintBottom_toBottomOf="@+id/recipient_text_view"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/sender_text_view"
                     tools:src="@drawable/avatar_3" />
 
                 <TextView
@@ -105,21 +108,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/grid_3"
+                    android:text="@{email.body}"
+                    android:textAppearance="?attr/textAppearanceBody1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sender_profile_image_view"
-                    android:text="@{email.body}"
-                    android:textAppearance="?attr/textAppearanceBody1" />
+                    app:layout_constraintTop_toBottomOf="@id/sender_profile_image_view" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/attachment_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/grid_3"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/body_text_view"
+                    android:overScrollMode="never"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:overScrollMode="never" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/body_text_view" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

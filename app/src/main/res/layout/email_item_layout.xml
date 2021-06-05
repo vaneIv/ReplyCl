@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedAttribute">
 
     <data>
 
@@ -32,6 +33,7 @@
             android:focusable="true"
             android:onClick="@{(view) -> listener.onEmailClicked(view, email)}"
             android:onLongClick="@{(view) -> listener.onEmailLongPressed(email)}"
+            android:transitionName="@{@string/email_card_transition_name(email.id)}"
             app:cardPreventCornerOverlap="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
