@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.transition.MaterialSharedAxis
 import com.vane.android.replycl.R
 import com.vane.android.replycl.data.SearchSuggestion
 import com.vane.android.replycl.data.SearchSuggestionStore
@@ -23,6 +24,12 @@ class SearchFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // TODO: Set up MaterialSharedAxis transition as exit and reenter transitions.
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
     }
 
     override fun onCreateView(
