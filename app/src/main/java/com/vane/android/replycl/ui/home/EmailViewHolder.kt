@@ -6,6 +6,7 @@ import com.vane.android.replycl.R
 import com.vane.android.replycl.data.Email
 import com.vane.android.replycl.databinding.EmailItemLayoutBinding
 import com.vane.android.replycl.ui.common.EmailAttachmentAdapter
+import com.vane.android.replycl.util.setTextAppearanceCompat
 import com.vane.android.replycl.util.themeStyle
 import kotlin.math.abs
 
@@ -42,7 +43,7 @@ class EmailViewHolder(
                 R.attr.textAppearanceHeadline5
             }
         )
-        binding.subjectTextView.setTextAppearance(
+        binding.subjectTextView.setTextAppearanceCompat(
             binding.subjectTextView.context,
             textAppearance
         )

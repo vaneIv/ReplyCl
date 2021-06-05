@@ -45,6 +45,8 @@ dependencies {
 
     // AndroidX
     implementation "androidx.core:core-ktx:$core_ktx_version"
+    // Downgrading appcompat version to 1.2.0(from 1.3.0) because when i added Layout Transitions
+    // my app started to crash under 1.3.0 version
     implementation "androidx.appcompat:appcompat:$appCompat_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
     implementation "androidx.recyclerview:recyclerview:$recycler_view_version"

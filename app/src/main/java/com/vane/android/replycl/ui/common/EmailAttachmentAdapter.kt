@@ -17,8 +17,8 @@ abstract class EmailAttachmentAdapter : RecyclerView.Adapter<EmailAttachmentView
 
     override fun getItemViewType(position: Int): Int = getLayoutIdForPosition(position)
 
-    fun submitList(attachment: List<EmailAttachment>) {
-        list = attachment
+    fun submitList(attachments: List<EmailAttachment>) {
+        list = attachments
         notifyDataSetChanged()
     }
 
